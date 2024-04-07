@@ -13,10 +13,13 @@ yolo_model = YOLO('./brain_tumor_adamax.pt')
 
 def predict(image_data, filename):
     image = Image.open(io.BytesIO(image_data))
-    results = yolo_model(image)
+     # Create the predictions directory if it doesn't exist
     save_dir = './predictions'
-    os.makedirs(save_dir, exist_ok=True)
-    
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+
+    results = yolo_model(image)
+   
     for i, result in enumerate(results):
         prediction_path = os.path.join(save_dir, f'{filename}_prediction.png')
         result.save(prediction_path)
@@ -39,4 +42,3 @@ def predict_image():
 
 if __name__ == '__main__':
     app.run(debug=True)
-    
