@@ -1,5 +1,5 @@
 Flask==2.1.0
 flask-cors==3.0.10
 Pillow==9.0.1
-ultralytics==0.1.28
+ultralytics>=0.0.13,<1.0
 gunicorn==21.2.0
