@@ -19,7 +19,7 @@ def predict(image_data, filename):
         os.makedirs(save_dir)
 
     results = yolo_model(image)
-   
+    print(results)
     for i, result in enumerate(results):
         prediction_path = os.path.join(save_dir, f'{filename}_prediction.png')
         result.save(prediction_path)
