@@ -27,18 +27,23 @@ def predict(image_data, filename):
     return prediction_path
 
 @app.route('/predict', methods=['POST'])
-def predict_image():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No image detected. Please upload the file.'})
+async def predict_image():
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': 'No image detected. Please upload the file.'})
 
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'})
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'No selected file'})
 
-    if file:
-        filename = os.path.splitext(file.filename)[0]  # Extract filename without extension
-        prediction_path = predict(file.read(), filename)
-        return send_file(prediction_path)
+        if file:
+            filename = os.path.splitext(file.filename)[0]  # Extract filename without extension
+            # Use asyncio to asynchronously call the predict function
+            prediction_path = await asyncio.to_thread(predict, file.read(), filename)
+            return await asyncio.to_thread(send_file, prediction_path)
+    except Exception as e:  # Catch all exceptions
+        print(e)
+        return jsonify({'error': 'An error occurred during prediction.'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
